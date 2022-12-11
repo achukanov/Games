@@ -2,9 +2,8 @@ from pathlib import Path
 
 import fastapi
 import uvicorn
-# from starlette.staticfiles import StaticFiles
-
 from models import db_session
+
 # from views import account
 # from views import home
 # from views import packages
@@ -26,7 +25,7 @@ def configure(dev_mode: bool):
 
 def configure_db(dev_mode: bool):
     file = (Path(__file__).parent / 'db' / 'small_games_db.sqlite').absolute()
-    db_session.global_init(file.as_posix())
+    db_session.global_init(file.as_posix(), app)
 
 
 # def configure_templates(dev_mode: bool):

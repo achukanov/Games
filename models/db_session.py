@@ -5,14 +5,14 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, AsyncSession
 from sqlalchemy.orm import Session
-
 from models.modelbase import SqlAlchemyBase
+from models.admin import create_admin
 
 __factory: Optional[Callable[[], Session]] = None
 __async_engine: Optional[AsyncEngine] = None
 
 
-def global_init(db_file: str):
+def global_init(db_file: str, app):
     global __factory, __async_engine
 
     if __factory:
@@ -32,9 +32,7 @@ def global_init(db_file: str):
     __async_engine = create_async_engine(async_conn_str, echo=False, connect_args={"check_same_thread": False})
     __factory = orm.sessionmaker(bind=__async_engine)
 
-    # noinspection PyUnresolvedReferences
-    # import data.__all_models
-    from models.models import Games, Categories, Tags, Publishers
+    create_admin(app, engine)
 
     SqlAlchemyBase.metadata.create_all(engine)
 

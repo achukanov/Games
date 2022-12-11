@@ -8,26 +8,34 @@ import sqlalchemy.ext.declarative
 from slugify import slugify
 from models.modelbase import SqlAlchemyBase
 
+# from admin import Admin, ModelView
 # SqlAlchemyBase = sqlalchemy.ext.declarative.declarative_base()
 
-# GamesTags = db.Table('games_tags',
-#                      SqlAlchemyBase.metadata,
-#                      db.Column('id', db.Integer, primary_key=True, index=True),
-#                      db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
-#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')))
+GamesTags = db.Table('games_tags',
+                     SqlAlchemyBase.metadata,
+                     db.Column('id', db.Integer, primary_key=True, index=True),
+                     db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
+                     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')))
 
-class GamesTags(SqlAlchemyBase):
-    __tablename__ = 'games_tags',
-    id: int = db.Column(db.Integer, primary_key=True)
-    game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
-    tag_id: int = db.Column(db.Integer, db.ForeignKey("tags.id"))
+GamesCategories = db.Table('games_categories',
+                           SqlAlchemyBase.metadata,
+                           db.Column('id', db.Integer, primary_key=True, index=True),
+                           db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
+                           db.Column('category_id', db.Integer, db.ForeignKey('categories.id')))
 
 
-class GamesCategories(SqlAlchemyBase):
-    __tablename__ = 'games_categories',
-    id: int = db.Column(db.Integer, primary_key=True)
-    game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
-    category_id: int = db.Column(db.Integer, db.ForeignKey("categories.id"))
+# class GamesTags(SqlAlchemyBase):
+#     __tablename__ = 'games_tags',
+#     id: int = db.Column(db.Integer, primary_key=True)
+#     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
+#     tag_id: int = db.Column(db.Integer, db.ForeignKey("tags.id"))
+
+#
+# class GamesCategories(SqlAlchemyBase):
+#     __tablename__ = 'games_categories',
+#     id: int = db.Column(db.Integer, primary_key=True)
+#     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
+#     category_id: int = db.Column(db.Integer, db.ForeignKey("categories.id"))
 
 
 class Games(SqlAlchemyBase):
@@ -91,7 +99,6 @@ class Categories(SqlAlchemyBase):
 event.listen(Categories.category_name, 'set', Categories.generate_slug, retval=False)
 
 
-
 class Tags(SqlAlchemyBase):
     __tablename__ = 'tags'
 
@@ -149,8 +156,8 @@ class Comments(SqlAlchemyBase):
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
 
 
-class Users(SqlAlchemyBase):
-    __tablename__ = 'users'
+class User(SqlAlchemyBase):
+    __tablename__ = 'user'
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name: str = db.Column(db.String)
