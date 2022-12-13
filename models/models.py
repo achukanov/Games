@@ -1,12 +1,18 @@
 import datetime
-# from typing import List
 
+from models.db_session import *
+from sqlalchemy.future import select
+from sqlalchemy import func
+# from typing import List
+from models.modelbase import SqlAlchemyBase
 import sqlalchemy as db
 import sqlalchemy.orm as orm
 from sqlalchemy import event
-import sqlalchemy.ext.declarative
+# import sqlalchemy.ext.declarative
 from slugify import slugify
-from models.modelbase import SqlAlchemyBase
+from sqlalchemy_utils import observes
+
+# from models.modelbase import SqlAlchemyBase
 
 # from admin import Admin, ModelView
 # SqlAlchemyBase = sqlalchemy.ext.declarative.declarative_base()
@@ -40,7 +46,7 @@ GamesCategories = db.Table('games_categories',
 
 class Games(SqlAlchemyBase):
     __tablename__ = 'games'
-
+    # TODO: добавить каскад удаления
     id: int = db.Column(db.Integer, primary_key=True)
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
     created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
@@ -66,8 +72,14 @@ class Games(SqlAlchemyBase):
     # tag_id: int = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("tags.id"))
     # tag = orm.relationship('Tags')
 
+    categories = orm.relationship("Categories", secondary="games_categories", back_populates='games')
+
+    tags = orm.relationship("Tags", secondary="games_tags", back_populates='games')
+
     publisher_id: int = db.Column(db.Integer, db.ForeignKey("publishers.id"))
     publisher = orm.relationship('Publishers')
+    # gallery = orm.relationship('Gallery')
+    # similar_games = orm.relationship('SimilarGames')
 
     # '''https://ploshadka.net/sqlalchemy-many-to-many/'''
     # tags = orm.relationship('Tags', secondary=GamesTags, backref='Games')
@@ -87,16 +99,12 @@ class Categories(SqlAlchemyBase):
     __tablename__ = 'categories'
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    category_name: str = db.Column(db.String(50), nullable=False, unique=True)
-    slug: str = db.Column(db.String(50), unique=True)
+    category_name: str = db.Column(db.String(140))
+    slug: str = db.Column(db.String(140))
+    games = orm.relationship("Games", secondary="games_categories", back_populates='categories')
 
-    @staticmethod
-    def generate_slug(target, value, oldvalue, initiator):
-        if value and (not target.slug or value != oldvalue):
-            target.slug = slugify(value)
-
-
-event.listen(Categories.category_name, 'set', Categories.generate_slug, retval=False)
+    def __repr__(self):
+        return self.category_name
 
 
 class Tags(SqlAlchemyBase):
@@ -104,8 +112,10 @@ class Tags(SqlAlchemyBase):
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tag_name: str = db.Column(db.String(20), nullable=False, unique=True)
+    games = orm.relationship("Games", secondary="games_tags", back_populates='tags')
 
-    # games = orm.relationship('Games', secondary=GamesTags, backref=orm.backref('tags', lazy='dynamic'))
+    def __repr__(self):
+        return self.tag_name
 
 
 class Publishers(SqlAlchemyBase):
@@ -124,10 +134,8 @@ class Gallery(SqlAlchemyBase):
     __tablename__ = 'media'
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id"))
     game = orm.relationship('Games')
-
     url_image = db.Column(db.String(50))
 
 
@@ -160,10 +168,12 @@ class User(SqlAlchemyBase):
     __tablename__ = 'user'
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name: str = db.Column(db.String)
-    email: str = db.Column(db.String, index=True, unique=True)
+    name: str = db.Column(db.String, doc='Имя')
+    email: str = db.Column(db.String, index=True, unique=True, doc='e-mail')
     hash_password: str = db.Column(db.String)
-    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    last_login: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    url_profile_image: str = db.Column(db.String)
-    is_active: bool = db.Column(db.Boolean, default=True)
+    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True,
+                                                doc='Дата регистрации')
+    last_login: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True,
+                                              doc='Последний вход')
+    url_profile_image: str = db.Column(db.String, doc='e-mail')
+    is_active: bool = db.Column(db.Boolean, default=True, doc='Активен')
