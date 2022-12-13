@@ -121,6 +121,14 @@ class SimilarGamesAdmin(ModelView, model=SimilarGames):
     # column_default_sort = "game"
 
 
+class LanguagesAdmin(ModelView, model=Languages):
+    can_export = False
+    name_plural = 'Языки'
+    page_size_options = [5, 25]
+    column_list = [Languages.id,
+                   Languages.language]
+
+
 def create_admin(app, engine):
     admin = Admin(app, engine)
     admin.add_view(UserAdmin)
@@ -130,3 +138,4 @@ def create_admin(app, engine):
     admin.add_view(PublishersAdmin)
     admin.add_view(GalleryAdmin)
     admin.add_view(SimilarGamesAdmin)
+    admin.add_view(LanguagesAdmin)

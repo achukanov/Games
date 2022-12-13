@@ -5,9 +5,9 @@ import uvicorn
 from models import db_session
 
 # from views import account
-# from views import home
+from views import game
 # from views import packages
-
+from fastapi.staticfiles import StaticFiles
 app = fastapi.FastAPI()  # docs_url=None, redoc_url=None)
 
 
@@ -19,7 +19,7 @@ def main():
 
 def configure(dev_mode: bool):
     # configure_templates(dev_mode)
-    # configure_routes()
+    configure_routes()
     configure_db(dev_mode)
 
 
@@ -32,11 +32,9 @@ def configure_db(dev_mode: bool):
 #     fastapi_chameleon.global_init('templates', auto_reload=dev_mode)
 
 
-# def configure_routes():
-#     app.mount('/static', StaticFiles(directory='static'), name='static')
-#     app.include_router(home.router)
-#     app.include_router(account.router)
-#     app.include_router(packages.router)
+def configure_routes():
+    app.mount('/static', StaticFiles(directory='static'), name='static')
+    app.include_router(game.router)
 
 
 if __name__ == '__main__':

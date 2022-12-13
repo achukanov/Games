@@ -1,21 +1,9 @@
 import datetime
-
-from models.db_session import *
-from sqlalchemy.future import select
-from sqlalchemy import func
-# from typing import List
 from models.modelbase import SqlAlchemyBase
 import sqlalchemy as db
 import sqlalchemy.orm as orm
 from sqlalchemy import event
-# import sqlalchemy.ext.declarative
 from slugify import slugify
-from sqlalchemy_utils import observes
-
-# from models.modelbase import SqlAlchemyBase
-
-# from admin import Admin, ModelView
-# SqlAlchemyBase = sqlalchemy.ext.declarative.declarative_base()
 
 GamesTags = db.Table('games_tags',
                      SqlAlchemyBase.metadata,
@@ -47,10 +35,12 @@ GamesCategories = db.Table('games_categories',
 class Games(SqlAlchemyBase):
     __tablename__ = 'games'
     # TODO: добавить каскад удаления
+    # TODO: добавить поле image
     id: int = db.Column(db.Integer, primary_key=True)
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
     created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+
     """Title - заголовок объекта"""
     title: str = db.Column(db.String(50), nullable=False, unique=True)
     slug: str = db.Column(db.String(50), unique=True)
@@ -58,8 +48,8 @@ class Games(SqlAlchemyBase):
     text: str = db.Column(db.String, nullable=True)
     description: str = db.Column(db.String(50))
     rating: int = db.Column(db.SmallInteger, default=0)
-    language: str = db.Column(db.String(50), nullable=True)
-    size: int = db.Column(db.Integer)
+    # language: str = db.Column(db.String(50), nullable=True)
+    size: int = db.Column(db.Float)
     url_download: str = db.Column(db.String(50))
     url_torrent: str = db.Column(db.String(50))
     url_video: str = db.Column(db.String(50))
@@ -78,6 +68,10 @@ class Games(SqlAlchemyBase):
 
     publisher_id: int = db.Column(db.Integer, db.ForeignKey("publishers.id"))
     publisher = orm.relationship('Publishers')
+
+    language_id: int = db.Column(db.Integer, db.ForeignKey("languages.id"))
+    language = orm.relationship('Languages')
+
     # gallery = orm.relationship('Gallery')
     # similar_games = orm.relationship('SimilarGames')
 
@@ -85,6 +79,9 @@ class Games(SqlAlchemyBase):
     # tags = orm.relationship('Tags', secondary=GamesTags, backref='Games')
 
     '''https://michaelcho.me/article/using-model-callbacks-in-sqlalchemy-to-generate-slugs'''
+
+    def __repr__(self):
+        return self.title
 
     @staticmethod
     def generate_slug(target, value, oldvalue, initiator):
@@ -126,8 +123,18 @@ class Publishers(SqlAlchemyBase):
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
     url_publisher_homepage: str = db.Column(db.String(50))
 
-    # category_id: int = db.Column(db.Integer, db.ForeignKey("categories.id"))
-    # category = orm.relationship('Categories')
+    def __repr__(self):
+        return self.publisher_name
+
+
+class Languages(SqlAlchemyBase):
+    __tablename__ = 'languages'
+
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    language: str = db.Column(db.String(20), nullable=False, unique=True)
+
+    def __repr__(self):
+        return self.language
 
 
 class Gallery(SqlAlchemyBase):
