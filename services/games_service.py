@@ -12,6 +12,14 @@ async def get_game_by_id(game_id: str) -> Optional[Games]:
         return result.scalar_one_or_none()
 
 
+async def get_top_games() -> list[Games]:
+    """ Максимум 12 элементов! """
+    async with db_session.create_async_session() as session:
+        query = select(Games).order_by(Games.rating.desc()).limit(12)
+        result = await session.execute(query)
+        return result.scalars()
+
+
 async def get_categories_by_game_id(game_id: str) -> list[Any]:
     async with db_session.create_async_session() as session:
         query = select(Categories).join(Categories.games).filter(Games.id == game_id)
@@ -47,5 +55,12 @@ async def get_link_games_by_game_id(game_id: str) -> list[Any]:
 async def get_publisher_by_game_id(game_id: str) -> list[Any]:
     async with db_session.create_async_session() as session:
         query = select(Publishers).join(Games.publisher).filter(Games.id == game_id)
+        result = await session.execute(query)
+        return result.scalar_one_or_none()
+
+
+async def get_language_by_game_id(game_id: str) -> list[Any]:
+    async with db_session.create_async_session() as session:
+        query = select(Languages).join(Games.language).filter(Games.id == game_id)
         result = await session.execute(query)
         return result.scalar_one_or_none()

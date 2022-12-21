@@ -1,9 +1,11 @@
 import datetime
 from models.modelbase import SqlAlchemyBase
 import sqlalchemy as db
-import sqlalchemy.orm as orm
+from sqlalchemy.orm import relationship
 from sqlalchemy import event
 from slugify import slugify
+
+# metadata = db.MetaData()
 
 GamesTags = db.Table('games_tags',
                      SqlAlchemyBase.metadata,
@@ -23,7 +25,7 @@ GamesCategories = db.Table('games_categories',
 #     id: int = db.Column(db.Integer, primary_key=True)
 #     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
 #     tag_id: int = db.Column(db.Integer, db.ForeignKey("tags.id"))
-
+#
 #
 # class GamesCategories(SqlAlchemyBase):
 #     __tablename__ = 'games_categories',
@@ -34,51 +36,29 @@ GamesCategories = db.Table('games_categories',
 
 class Games(SqlAlchemyBase):
     __tablename__ = 'games'
-    # TODO: добавить каскад удаления
-    # TODO: добавить поле image
     id: int = db.Column(db.Integer, primary_key=True)
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
     created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
     last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-
-    """Title - заголовок объекта"""
     title: str = db.Column(db.String(50), nullable=False, unique=True)
     slug: str = db.Column(db.String(50), unique=True)
-    """Description - описание объекта"""
     text: str = db.Column(db.String, nullable=True)
-    description: str = db.Column(db.String(50))
+    description: str = db.Column(db.String(100))
     rating: int = db.Column(db.SmallInteger, default=0)
-    # language: str = db.Column(db.String(50), nullable=True)
     size: int = db.Column(db.Float)
-    url_download: str = db.Column(db.String(50))
-    url_torrent: str = db.Column(db.String(50))
-    url_video: str = db.Column(db.String(50))
+    url_download: str = db.Column(db.String(100))
+    url_torrent: str = db.Column(db.String(100))
+    url_video: str = db.Column(db.String(100))
+    url_image: str = db.Column(db.String(100))
     is_videogame: bool = db.Column(db.Boolean, index=True)
-
-    '''Зависимости'''
-    # category_id: int = db.Column(db.Integer, db.ForeignKey("categories.id"))
-    # category = orm.relationship('Categories')
-
-    # tag_id: int = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("tags.id"))
-    # tag = orm.relationship('Tags')
-
-    categories = orm.relationship("Categories", secondary="games_categories", back_populates='games')
-
-    tags = orm.relationship("Tags", secondary="games_tags", back_populates='games')
-
+    categories = relationship("Categories", secondary="games_categories", back_populates='games')
+    tags = relationship("Tags", secondary="games_tags", back_populates='games')
     publisher_id: int = db.Column(db.Integer, db.ForeignKey("publishers.id"))
-    publisher = orm.relationship('Publishers')
-
+    publisher = relationship('Publishers')
     language_id: int = db.Column(db.Integer, db.ForeignKey("languages.id"))
-    language = orm.relationship('Languages')
-
-    # gallery = orm.relationship('Gallery')
-    # similar_games = orm.relationship('SimilarGames')
-
-    # '''https://ploshadka.net/sqlalchemy-many-to-many/'''
-    # tags = orm.relationship('Tags', secondary=GamesTags, backref='Games')
-
-    '''https://michaelcho.me/article/using-model-callbacks-in-sqlalchemy-to-generate-slugs'''
+    language = relationship('Languages')
+    # gallary = relationship('Gallery', cascade="all, delete, delete-orphan")
+    comments = relationship('Comments', cascade="all, delete, delete-orphan")
 
     def __repr__(self):
         return self.title
@@ -98,7 +78,7 @@ class Categories(SqlAlchemyBase):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category_name: str = db.Column(db.String(140))
     slug: str = db.Column(db.String(140))
-    games = orm.relationship("Games", secondary="games_categories", back_populates='categories')
+    games = relationship("Games", secondary="games_categories", back_populates='categories')
 
     def __repr__(self):
         return self.category_name
@@ -109,7 +89,7 @@ class Tags(SqlAlchemyBase):
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tag_name: str = db.Column(db.String(20), nullable=False, unique=True)
-    games = orm.relationship("Games", secondary="games_tags", back_populates='tags')
+    games = relationship("Games", secondary="games_tags", back_populates='tags')
 
     def __repr__(self):
         return self.tag_name
@@ -142,39 +122,24 @@ class Gallery(SqlAlchemyBase):
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id"))
-    game = orm.relationship('Games')
-    url_image = db.Column(db.String(50))
+    game = relationship('Games')
+    url_image = db.Column(db.String())
 
 
 class SimilarGames(SqlAlchemyBase):
     __tablename__ = 'similar_games'
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id"))
-    game = orm.relationship('Games')
-
+    game = relationship('Games')
     url_similar_game: str = db.Column(db.String(50))
 
 
-class Comments(SqlAlchemyBase):
-    __tablename__ = 'comments'
+class Users(SqlAlchemyBase):
+    __tablename__ = 'users'
 
-    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
-    game_id: int = db.Column(db.Integer, db.ForeignKey("games.id"))
-    game = orm.relationship('Games')
-
-    content: str = db.Column(db.String, nullable=False)
-    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
-    is_published: bool = db.Column(db.Boolean, default=True, index=True)
-
-
-class User(SqlAlchemyBase):
-    __tablename__ = 'user'
-
-    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # metadata = db.MetaData()
+    id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String, doc='Имя')
     email: str = db.Column(db.String, index=True, unique=True, doc='e-mail')
     hash_password: str = db.Column(db.String)
@@ -184,3 +149,22 @@ class User(SqlAlchemyBase):
                                               doc='Последний вход')
     url_profile_image: str = db.Column(db.String, doc='e-mail')
     is_active: bool = db.Column(db.Boolean, default=True, doc='Активен')
+    comments = relationship('Comments', cascade="all, delete, delete-orphan")
+
+    def __repr__(self):
+        return self.name
+
+
+class Comments(SqlAlchemyBase):
+    __tablename__ = 'comments'
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    content: str = db.Column(db.String, nullable=False)
+    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    is_published: bool = db.Column(db.Boolean, default=True, index=True)
+    user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
+    game_id: int = db.Column(db.Integer, db.ForeignKey("games.id"))
+
+    def __repr__(self):
+        return self.content

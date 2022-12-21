@@ -2,27 +2,33 @@ from models.models import *
 from sqladmin import Admin, ModelView
 
 
-class UserAdmin(ModelView, model=User):
+''' icon = https://fontawesome.com/'''
+
+
+class UsersAdmin(ModelView, model=Users):
     can_create = False
     can_export = False
     can_edit = False
+    name = 'Профиль'
     name_plural = 'Профили'
+    icon = "fa-solid fa-user"
     page_size_options = [5, 25, 50]
-    column_list = [User.id,
-                   User.name,
-                   User.email,
-                   User.created_date,
-                   User.last_login,
-                   User.url_profile_image,
-                   User.is_active]
-    column_searchable_list = [User.name, User.email]
-    column_sortable_list = [User.name, User.created_date, User.last_login]
+    column_list = [Users.id,
+                   Users.name,
+                   Users.email,
+                   Users.created_date,
+                   Users.last_login,
+                   Users.url_profile_image,
+                   Users.is_active]
+    column_searchable_list = [Users.name, Users.email]
+    column_sortable_list = [Users.name, Users.created_date, Users.last_login]
     column_default_sort = "created_date"
 
 
 class CategoriesAdmin(ModelView, model=Categories):
     can_export = False
     name_plural = 'Категории'
+    icon = "fa-solid fa-bars"
     page_size_options = [5, 25, 50]
     column_list = [Categories.id,
                    Categories.category_name,
@@ -37,6 +43,7 @@ class CategoriesAdmin(ModelView, model=Categories):
 class TagsAdmin(ModelView, model=Tags):
     can_export = False
     name_plural = 'Тэги'
+    icon = "fa-solid fa-hashtag"
     page_size_options = [5, 25]
     column_list = [Tags.id,
                    Tags.tag_name,
@@ -50,6 +57,7 @@ class TagsAdmin(ModelView, model=Tags):
 class GamesAdmin(ModelView, model=Games):
     can_export = False
     name_plural = 'Игры'
+    icon = "fa-solid fa-gamepad"
     page_size_options = [5, 25, 50]
     column_list = [Games.id,
                    Games.is_published,
@@ -80,6 +88,7 @@ class GamesAdmin(ModelView, model=Games):
 class PublishersAdmin(ModelView, model=Publishers):
     can_export = False
     name_plural = 'Издатели'
+    icon = "fa-solid fa-pen"
     page_size_options = [5, 25]
     column_list = [Publishers.id,
                    Publishers.publisher_name,
@@ -94,12 +103,12 @@ class PublishersAdmin(ModelView, model=Publishers):
 class GalleryAdmin(ModelView, model=Gallery):
     can_export = False
     name_plural = 'Галерея'
+    icon = "fa-solid fa-image"
     page_size_options = [5, 25]
     column_list = [Gallery.id,
                    Gallery.game_id,
-                   Gallery.game,
                    Gallery.url_image]
-    column_searchable_list = [Gallery.game]
+    column_searchable_list = [Gallery.game_id]
 
     '''Выдет ошибку при column_sortable_list и column_default_sort'''
     # column_sortable_list = [Gallery.game_id,
@@ -110,6 +119,7 @@ class GalleryAdmin(ModelView, model=Gallery):
 class SimilarGamesAdmin(ModelView, model=SimilarGames):
     can_export = False
     name_plural = 'Похожие игры'
+    icon = "fa-solid fa-thumbs-up"
     page_size_options = [5, 25]
     column_list = [SimilarGames.id,
                    SimilarGames.game_id,
@@ -124,14 +134,24 @@ class SimilarGamesAdmin(ModelView, model=SimilarGames):
 class LanguagesAdmin(ModelView, model=Languages):
     can_export = False
     name_plural = 'Языки'
+    icon = "fa-solid fa-language"
     page_size_options = [5, 25]
     column_list = [Languages.id,
                    Languages.language]
 
 
+class CommentsAdmin(ModelView, model=Comments):
+    can_export = False
+    name_plural = 'Комментарии'
+    icon = "fa-solid fa-comments"
+    page_size_options = [5, 25]
+    column_list = [Comments.id,
+                   Comments.content]
+
+
 def create_admin(app, engine):
     admin = Admin(app, engine)
-    admin.add_view(UserAdmin)
+    admin.add_view(UsersAdmin)
     admin.add_view(GamesAdmin)
     admin.add_view(CategoriesAdmin)
     admin.add_view(TagsAdmin)
@@ -139,3 +159,4 @@ def create_admin(app, engine):
     admin.add_view(GalleryAdmin)
     admin.add_view(SimilarGamesAdmin)
     admin.add_view(LanguagesAdmin)
+    admin.add_view(CommentsAdmin)
