@@ -1,12 +1,11 @@
 import fastapi
 from fastapi import Request
-from services.games_service import get_top_games
+from services.games_service import *
 from viewmodels.game.game_view_model import GameViewModel
-
-
+from infrastructure.word_cases import word_cases
 # from typing import Optional
-
 router = fastapi.APIRouter()
+
 
 # TODO: переделать роуты под слаги
 @router.get('/top', include_in_schema=False)
@@ -21,6 +20,40 @@ async def top_games() -> fastapi.responses.JSONResponse:
                 "title": game.title,
                 "slug": game.slug,
                 "image": game.url_image
+            }
+            data.append(game_list)
+
+        response = {
+            'success': 'true',
+            'data': data
+        }
+
+        return fastapi.responses.JSONResponse(response)
+    else:
+        return fastapi.responses.JSONResponse({'success': 'false'})
+
+
+@router.get('/new', include_in_schema=False)
+async def new_games() -> fastapi.responses.JSONResponse:
+    games = await get_new_games()
+    data = []
+
+    if games:
+        for game in games:
+            categories = await get_categories_by_game_id(str(game.id))
+            tags = await get_tags_by_game_id(str(game.id))
+            comments_count = await get_comments_count_by_game_id(str(game.id))
+            comment_case = await word_cases(comments_count)
+            game_list = {
+                "id": game.id,
+                "categories": categories,
+                "videoGame": 'true' if game.is_videogame else 'false',
+                "title": game.title,
+                "slug": game.slug,
+                "image": game.url_image,
+                "tags": tags,
+                "rating": game.rating,
+                "comments": comments_count + ' ' + comment_case
             }
             data.append(game_list)
 
@@ -61,7 +94,7 @@ async def details(game_id: str, request: Request) -> fastapi.responses.JSONRespo
         },
         data = {'seo': seo,
                 'og': og,
-                "videoGame": game.is_videogame,
+                "videoGame": 'true' if game.is_videogame else 'false',
                 "categories": categories,
                 "title": game.title,
                 "slug": game.slug,
