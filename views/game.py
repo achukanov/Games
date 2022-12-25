@@ -1,8 +1,11 @@
 import fastapi
 from fastapi import Request
+
+from models.models import Games
 from services.games_service import *
 from viewmodels.game.game_view_model import GameViewModel
 from infrastructure.word_cases import word_cases
+
 # from typing import Optional
 router = fastapi.APIRouter()
 
@@ -116,3 +119,40 @@ async def details(game_id: str, request: Request) -> fastapi.responses.JSONRespo
         return fastapi.responses.JSONResponse(resp)
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})
+
+
+# TODO: переделать роут под qwerty
+@router.get('/search/{search}', include_in_schema=False)
+async def search_games(search: str) -> fastapi.responses.JSONResponse:
+    games = await get_games_from_search(search)
+    data = []
+
+    if games:
+        for game in games:
+            game_id = game.id
+            categories = await get_categories_by_game_id(str(game_id))
+            tags = await get_tags_by_game_id(str(game.id))
+            comments_count = await get_comments_count_by_game_id(str(game.id))
+            comment_case = await word_cases(comments_count)
+            game_list = {
+                "id": game.id,
+                "categories": categories,
+                "title": game.title,
+                "slug": game.slug,
+                "image": game.url_image,
+                "tags": tags,
+                "rating": game.rating,
+                "comments": comments_count + ' ' + comment_case,
+                "video": game.url_video
+            }
+            data.append(game_list)
+
+        response = {
+            'success': 'true',
+            'data': data
+        }
+
+        return fastapi.responses.JSONResponse(response)
+    else:
+        return fastapi.responses.JSONResponse({'success': 'false'})
+

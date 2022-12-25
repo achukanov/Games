@@ -12,16 +12,16 @@ async def get_game_by_id(game_id: str) -> Optional[Games]:
 
 
 async def get_top_games() -> list[Games]:
-    """ Максимум 12 элементов! """
     async with db_session.create_async_session() as session:
+        """ Максимум 12 элементов! """
         query = select(Games).order_by(Games.rating.desc()).limit(12)
         result = await session.execute(query)
         return result.scalars()
 
 
 async def get_new_games() -> list[Games]:
-    """ Максимум 12 элементов! """
     async with db_session.create_async_session() as session:
+        """ Максимум 12 элементов! """
         query = select(Games).order_by(Games.created_date).limit(12)
         result = await session.execute(query)
         return result.scalars()
@@ -81,3 +81,12 @@ async def get_comments_count_by_game_id(game_id: str) -> str:
         for i in result.scalars():
             comments_count += 1
         return str(comments_count)
+
+
+async def get_games_from_search(search: str) -> list[Games]:
+    search_word = "%" + search + "%"
+    async with db_session.create_async_session() as session:
+        """ Максимум 30 элементов! """
+        query = select(Games).filter(Games.slug.like(search_word)).limit(30)
+        result = await session.execute(query)
+        return result.scalars()
