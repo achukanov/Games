@@ -1,9 +1,19 @@
-# from typing import Optional, List, Any
-# from models import db_session
-# from models.models import *
-# from sqlalchemy.future import select
-# from typing import List, Optional
-#
+from typing import Optional, List, Any
+from models import db_session
+from models.models import *
+from sqlalchemy.future import select
+from typing import List, Optional
+
+
+async def get_all_categories() -> list[Categories]:
+    async with db_session.create_async_session() as session:
+        query = select(Categories)
+        result = await session.execute(query)
+        return result.scalars()
+
+
+
+
 #
 # async def get_category_by_id(category_id: str) -> Optional[Categories]:
 #     async with db_session.create_async_session() as session:

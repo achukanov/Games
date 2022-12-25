@@ -168,3 +168,17 @@ class Comments(SqlAlchemyBase):
 
     def __repr__(self):
         return self.content
+
+
+class Subscribers(SqlAlchemyBase):
+    __tablename__ = 'subscribers'
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    email: str = db.Column(db.String, index=True, unique=True)
+    is_subscribe: bool = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return self.email
+
