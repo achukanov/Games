@@ -14,3 +14,18 @@ async def subscribe(request: Request):
         return fastapi.responses.JSONResponse({'success': 'true'})
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})
+
+
+
+@router.post('/feedback', include_in_schema=False)
+async def feedback(request: Request):
+    form = await request.form()
+    first_name = form.get('firstName')
+    email = form.get('email')
+    email = form.get('email')
+    email = form.get('email')
+    account = await subscribe(email)
+    if account:
+        return fastapi.responses.JSONResponse({'success': 'true'})
+    else:
+        return fastapi.responses.JSONResponse({'success': 'false'})

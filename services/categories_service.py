@@ -12,14 +12,12 @@ async def get_all_categories() -> list[Categories]:
         return result.scalars()
 
 
+async def get_category_by_slug(category_slug: str) -> Optional[Categories]:
+    async with db_session.create_async_session() as session:
+        query = select(Categories).filter(Categories.slug == category_slug)
+        result = await session.execute(query)
+        return result.scalar_one_or_none()
 
-
-#
-# async def get_category_by_id(category_id: str) -> Optional[Categories]:
-#     async with db_session.create_async_session() as session:
-#         query = select(Categories).filter(Categories.id == category_id)
-#         result = await session.execute(query)
-#         return result.scalar_one_or_none()
 #
 #
 # async def get_categories_by_game_id(category_id: str) -> list[Any]:

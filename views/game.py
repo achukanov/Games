@@ -46,7 +46,6 @@ async def new_games() -> fastapi.responses.JSONResponse:
             categories = await get_categories_by_game_id(str(game.id))
             tags = await get_tags_by_game_id(str(game.id))
             comments_count = await get_comments_count_by_game_id(str(game.id))
-            comment_case = await word_cases(comments_count)
             game_list = {
                 "id": game.id,
                 "categories": categories,
@@ -56,7 +55,7 @@ async def new_games() -> fastapi.responses.JSONResponse:
                 "image": game.url_image,
                 "tags": tags,
                 "rating": game.rating,
-                "comments": comments_count + ' ' + comment_case
+                "comments": comments_count
             }
             data.append(game_list)
 
@@ -133,7 +132,6 @@ async def search_games(search: str) -> fastapi.responses.JSONResponse:
             categories = await get_categories_by_game_id(str(game_id))
             tags = await get_tags_by_game_id(str(game.id))
             comments_count = await get_comments_count_by_game_id(str(game.id))
-            comment_case = await word_cases(comments_count)
             game_list = {
                 "id": game.id,
                 "categories": categories,
@@ -142,7 +140,7 @@ async def search_games(search: str) -> fastapi.responses.JSONResponse:
                 "image": game.url_image,
                 "tags": tags,
                 "rating": game.rating,
-                "comments": comments_count + ' ' + comment_case,
+                "comments": comments_count,
                 "video": game.url_video
             }
             data.append(game_list)
@@ -155,4 +153,3 @@ async def search_games(search: str) -> fastapi.responses.JSONResponse:
         return fastapi.responses.JSONResponse(response)
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})
-
