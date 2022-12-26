@@ -3,6 +3,7 @@ from fastapi import Request
 
 from models.models import Games
 from services.games_service import *
+from services.seo_service import get_seo
 from viewmodels.game.game_view_model import GameViewModel
 from infrastructure.word_cases import word_cases
 
@@ -80,12 +81,12 @@ async def details(game_id: str, request: Request) -> fastapi.responses.JSONRespo
     link_games = vm.link_games
     publisher = vm.publisher
     language = vm.language
-
+    seo = await get_seo('games_slug')
     if vm:
         success = 'true'
         seo = {
-            "title": game.title,
-            "description": game.description
+            "title": seo.title,
+            "description": seo.description
         }
         og = {
             "title": game.title,

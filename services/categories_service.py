@@ -12,6 +12,13 @@ async def get_all_categories() -> list[Categories]:
         return result.scalars()
 
 
+async def get_all_publishers() -> list[Publishers]:
+    async with db_session.create_async_session() as session:
+        query = select(Publishers)
+        result = await session.execute(query)
+        return result.scalars()
+
+
 async def get_category_by_slug(category_slug: str) -> Optional[Categories]:
     async with db_session.create_async_session() as session:
         query = select(Categories).filter(Categories.slug == category_slug)

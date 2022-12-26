@@ -192,3 +192,13 @@ class Feedback(SqlAlchemyBase):
     email: str = db.Column(db.String)
     title: str = db.Column(db.String)
     message: str = db.Column(db.String)
+
+
+class Seo(SqlAlchemyBase):
+    __tablename__ = 'seo'
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    last_updated: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    page: str = db.Column(db.String)
+    title: str = db.Column(db.String)
+    description: str = db.Column(db.String)

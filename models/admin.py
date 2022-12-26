@@ -1,7 +1,6 @@
 from models.models import *
 from sqladmin import Admin, ModelView
 
-
 ''' icon = https://fontawesome.com/'''
 
 
@@ -149,6 +148,46 @@ class CommentsAdmin(ModelView, model=Comments):
                    Comments.content]
 
 
+class FeedbackAdmin(ModelView, model=Feedback):
+    can_export = False
+    name_plural = 'Обратная связь'
+    icon = "fa-solid fa-comment-dots"
+    page_size_options = [5, 25]
+    column_list = [Feedback.id,
+                   Feedback.created_date,
+                   Feedback.first_name,
+                   Feedback.email,
+                   Feedback.title,
+                   Feedback.message]
+    column_default_sort = "created_date"
+
+
+class SEOAdmin(ModelView, model=Seo):
+    can_export = False
+    name_plural = 'Описание страницы'
+    icon = "fa-solid fa-tag"
+    page_size_options = [5, 25]
+    column_list = [Seo.id,
+                   Seo.last_updated,
+                   Seo.page,
+                   Seo.title,
+                   Seo.description]
+    column_default_sort = "page"
+
+
+class SubscribersAdmin(ModelView, model=Subscribers):
+    can_export = False
+    name_plural = 'Подписки'
+    icon = "fa-solid fa-at"
+    page_size_options = [5, 25]
+    column_list = [Subscribers.id,
+                   Subscribers.created_date,
+                   Subscribers.last_updated,
+                   Subscribers.email,
+                   Subscribers.is_subscribe]
+    column_default_sort = "created_date"
+
+
 def create_admin(app, engine):
     admin = Admin(app, engine)
     admin.add_view(UsersAdmin)
@@ -160,3 +199,6 @@ def create_admin(app, engine):
     admin.add_view(SimilarGamesAdmin)
     admin.add_view(LanguagesAdmin)
     admin.add_view(CommentsAdmin)
+    admin.add_view(FeedbackAdmin)
+    admin.add_view(SEOAdmin)
+    admin.add_view(SubscribersAdmin)
