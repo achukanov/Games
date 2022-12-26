@@ -182,3 +182,13 @@ class Subscribers(SqlAlchemyBase):
     def __repr__(self):
         return self.email
 
+
+class Feedback(SqlAlchemyBase):
+    __tablename__ = 'feedback'
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    created_date: datetime.datetime = db.Column(db.DateTime, default=datetime.datetime.now, index=True)
+    first_name: str = db.Column(db.String)
+    email: str = db.Column(db.String)
+    title: str = db.Column(db.String)
+    message: str = db.Column(db.String)

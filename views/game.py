@@ -120,10 +120,10 @@ async def details(game_id: str, request: Request) -> fastapi.responses.JSONRespo
         return fastapi.responses.JSONResponse({'success': 'false'})
 
 
-# TODO: переделать роут под qwerty
-@router.get('/search/{search}', include_in_schema=False)
-async def search_games(search: str) -> fastapi.responses.JSONResponse:
-    games = await get_games_from_search(search)
+# TODO: Добавить проверку инъекций
+@router.get('/search', include_in_schema=False)
+async def search_games(q: str | None = None) -> fastapi.responses.JSONResponse:
+    games = await get_games_from_search(q)
     data = []
 
     if games:
