@@ -100,6 +100,7 @@ class Publishers(SqlAlchemyBase):
 
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     publisher_name: str = db.Column(db.String(20), nullable=False, unique=True)
+    slug: str = db.Column(db.String(50), unique=True)
     is_published: bool = db.Column(db.Boolean, default=True, index=True)
     url_publisher_homepage: str = db.Column(db.String(50))
 

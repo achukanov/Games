@@ -14,7 +14,6 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
     seo = {}
     data = []
     if group == 'genres':
-        print('genres')
         categories = await get_all_categories()
         seo = await get_seo('categories')
         if categories:
@@ -26,11 +25,11 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
                     "slug": category.slug
                 }
                 data.append(categories_list)
-        seo = {
-            "title": seo.title,
-            "description": seo.description
-        }
-        print('genres')
+        if seo:
+            seo = {
+                "title": seo.title,
+                "description": seo.description
+            }
 
     elif group == 'publishers':
         publishers = await get_all_publishers()
@@ -40,18 +39,19 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
             for publisher in publishers:
                 publishers_list = {
                     "id": publisher.id,
-                    "publisher": publisher.publisher_name
-                    # "slug": publisher.slug
+                    "publisher": publisher.publisher_name,
+                    "slug": publisher.slug
                 }
                 data.append(publishers_list)
-        seo = {
-            "title": seo.title,
-            "description": seo.description
-        }
+        if seo:
+            seo = {
+                "title": seo.title,
+                "description": seo.description
+            }
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})
-
-    print('elif')
+    # if not seo:
+    #     seo = 'false'
     response = {
         'success': 'true',
         'seo': seo,
