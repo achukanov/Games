@@ -9,7 +9,7 @@ router = fastapi.APIRouter()
 
 
 # TODO: уточнить роут группировок и SEO
-@router.get('/categories', include_in_schema=False)
+@router.get('/categories')
 async def categories_and_publishers(group: str | None = 'genres') -> fastapi.responses.JSONResponse:
     seo = {}
     data = []
@@ -59,7 +59,7 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
     }
     return fastapi.responses.JSONResponse(response)
 
-@router.get('/categories/{slug}', include_in_schema=False)
+@router.get('/categories/{slug}')
 async def games_by_category(slug: str, page: str | None = 1):
     games, count = await get_games_and_count_page_by_category_slug_and_page(slug, page)
     category = await get_category_by_slug(slug)

@@ -3,7 +3,8 @@ from sqladmin import Admin, ModelView
 
 ''' icon = https://fontawesome.com/'''
 
-
+""" Заполнить в админке таблицу SEO """
+""" categories, publishers, categories_slug, games_slug """
 class UsersAdmin(ModelView, model=Users):
     can_create = False
     can_export = False

@@ -3,6 +3,7 @@ import fastapi
 import uvicorn
 from models import db_session
 from views.game import router as game_router
+from views.search import router as search_router
 from views.category import router as category_router
 from views.forms import router as form_router
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +32,7 @@ def configure_routes():
     app.include_router(game_router)
     app.include_router(category_router)
     app.include_router(form_router)
+    app.include_router(search_router)
 
 
 if __name__ == '__main__':

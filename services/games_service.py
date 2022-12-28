@@ -5,9 +5,9 @@ from sqlalchemy.future import select
 from typing import Any, Optional, Tuple
 
 
-async def get_game_by_id(game_id: str) -> Optional[Games]:
+async def get_game_by_slug(game_slug: str) -> Optional[Games]:
     async with db_session.create_async_session() as session:
-        query = select(Games).filter(Games.id == game_id)
+        query = select(Games).filter(Games.slug == game_slug)
         result = await session.execute(query)
         return result.scalar_one_or_none()
 
