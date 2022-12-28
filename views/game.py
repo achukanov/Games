@@ -70,9 +70,9 @@ async def new_games() -> fastapi.responses.JSONResponse:
         return fastapi.responses.JSONResponse({'success': 'false'})
 
 
-@router.get('/games/{game_id}')
-async def details(game_id: str) -> fastapi.responses.JSONResponse:
-    game = await get_game_by_slug(game_id)
+@router.get('/games/{slug}')
+async def details(slug: str) -> fastapi.responses.JSONResponse:
+    game = await get_game_by_slug(slug)
     id = str(game.id)
     categories = await get_categories_by_game_id(str(id))
     gallery = await get_gallery_by_game_id(id)
