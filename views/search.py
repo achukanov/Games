@@ -6,6 +6,7 @@ from services.games_service import get_games_from_search, get_categories_by_game
 router = fastapi.APIRouter()
 
 
+# TODO: Добавить проверку инъекций
 @router.get('/search')
 async def search_games(q: str | None = None) -> fastapi.responses.JSONResponse:
     games = await get_games_from_search(q)

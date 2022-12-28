@@ -72,7 +72,7 @@ async def games_by_category(slug: str, page: str | None = 1):
         }
         for game in games:
             categories = await get_categories_by_game_id(str(game.id))
-            tags = await get_tags_by_game_id(str(game.id))
+            # tags = await get_tags_by_game_id(str(game.id))
             comments_count = await get_comments_count_by_game_id(str(game.id))
             games_list = {
                 "id": game.id,
@@ -81,7 +81,7 @@ async def games_by_category(slug: str, page: str | None = 1):
                 "slug": game.slug,
                 "image": game.url_image,
                 "description": game.description,
-                "tags": tags,
+                "tags": categories,
                 "rating": game.rating,
                 "comments": comments_count,
                 "video": game.url_video
