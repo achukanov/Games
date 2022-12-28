@@ -59,45 +59,12 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
     }
     return fastapi.responses.JSONResponse(response)
 
-@router.get('/categories/{slug}')
-async def games_by_category(slug: str, page: str | None = 1):
-    games, count = await get_games_and_count_page_by_category_slug_and_page(slug, page)
-    category = await get_category_by_slug(slug)
-    seo = await get_seo('categories_slug')
-    if games and category:
-        data = []
-        seo = {
-            "title": seo.title,
-            "description": seo.description
-        }
-        for game in games:
-            categories = await get_categories_by_game_id(str(game.id))
-            # tags = await get_tags_by_game_id(str(game.id))
-            comments_count = await get_comments_count_by_game_id(str(game.id))
-            games_list = {
-                "id": game.id,
-                "categories": categories,
-                "title": game.title,
-                "slug": game.slug,
-                "image": game.url_image,
-                "description": game.description,
-                "tags": categories,
-                "rating": game.rating,
-                "comments": comments_count,
-                "video": game.url_video
-            }
-            data.append(games_list)
 
-        response = {
-            'success': 'true',
-            'nameCategory': category.category_name,
-            'slugCategory': category.slug,
-            'seo': seo,
-            'countPage': count,
-            'page': page,
-            'data': data
-        }
-
-        return fastapi.responses.JSONResponse(response)
-    else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+@router.get('/categories/pages')
+async def categories_pages():
+    data = await get_categories_pages()
+    response = {
+        'success': 'true',
+        'data': data
+    }
+    return fastapi.responses.JSONResponse(response)
