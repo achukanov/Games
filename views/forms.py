@@ -11,7 +11,7 @@ async def sub(request: Request):
     form = await request.form()
     email = form.get('email')
     account = await subscribe(email)
-    if account:
+    if account and form:
         return fastapi.responses.JSONResponse({'success': 'true'})
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})
@@ -25,7 +25,7 @@ async def feed(request: Request):
     title = form.get('title')
     message = form.get('massage')
     account = await feedback(first_name, email, title, message)
-    if account:
+    if account and form:
         return fastapi.responses.JSONResponse({'success': 'true'})
     else:
         return fastapi.responses.JSONResponse({'success': 'false'})

@@ -100,7 +100,7 @@ async def get_games_from_search(search: str) -> list[Games]:
         """ Максимум 30 элементов! """
         query = select(Games).filter(Games.slug.like(search_word)).limit(30)
         result = await session.execute(query)
-        return result.scalars()
+        return result.unique()
 
 
 async def get_games_and_count_page_by_category_slug_and_page(slug: str, page: str | None) -> \

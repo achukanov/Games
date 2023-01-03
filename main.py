@@ -8,7 +8,7 @@ from views.category import router as category_router
 from views.forms import router as form_router
 from fastapi.staticfiles import StaticFiles
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI()  #(docs_url=None, redoc_url=None)
 
 
 def main():

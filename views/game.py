@@ -5,7 +5,7 @@ router = fastapi.APIRouter()
 
 
 @router.get('/games/pages')
-async def details() -> fastapi.responses.JSONResponse:
+async def games_pages() -> fastapi.responses.JSONResponse:
     slugs = await get_all_game_slugs()
     if slugs:
         success = 'true',
@@ -18,11 +18,11 @@ async def details() -> fastapi.responses.JSONResponse:
         resp = {'success': success, 'data': data}
         return fastapi.responses.JSONResponse(resp)
     else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
 
 
 @router.get('/games/{slug}')
-async def details(slug: str) -> fastapi.responses.JSONResponse:
+async def games_slug(slug: str) -> fastapi.responses.JSONResponse:
     game = await get_game_by_slug(slug)
     id = str(game.id)
     categories = await get_categories_by_game_id(str(id))
@@ -68,7 +68,7 @@ async def details(slug: str) -> fastapi.responses.JSONResponse:
         resp = {'success': success, 'data': data}
         return fastapi.responses.JSONResponse(resp)
     else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
 
 
 @router.get('/top')
@@ -93,7 +93,7 @@ async def top_games() -> fastapi.responses.JSONResponse:
 
         return fastapi.responses.JSONResponse(response)
     else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
 
 
 @router.get('/new')
@@ -126,4 +126,4 @@ async def new_games() -> fastapi.responses.JSONResponse:
 
         return fastapi.responses.JSONResponse(response)
     else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})

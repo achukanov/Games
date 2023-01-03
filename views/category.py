@@ -8,7 +8,6 @@ from typing import Optional
 router = fastapi.APIRouter()
 
 
-# TODO: уточнить роут группировок и SEO
 @router.get('/categories')
 async def categories_and_publishers(group: str | None = 'genres') -> fastapi.responses.JSONResponse:
     seo = {}
@@ -49,7 +48,7 @@ async def categories_and_publishers(group: str | None = 'genres') -> fastapi.res
                 "description": seo.description
             }
     else:
-        return fastapi.responses.JSONResponse({'success': 'false'})
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
     # if not seo:
     #     seo = 'false'
     response = {
