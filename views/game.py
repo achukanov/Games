@@ -1,6 +1,7 @@
 import fastapi
 from services.games_service import *
 from services.seo_service import get_seo
+
 router = fastapi.APIRouter()
 
 
