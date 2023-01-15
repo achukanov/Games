@@ -12,7 +12,7 @@ async def get_game_by_slug(game_slug: str) -> Optional[Games]:
         return result.scalar_one_or_none()
 
 
-async def get_all_game_slugs():
+async def get_all_game_slugs() -> list[Games.slug]:
     async with db_session.create_async_session() as session:
         query = select(Games)
         result = await session.execute(query)
