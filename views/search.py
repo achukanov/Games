@@ -22,7 +22,6 @@ async def search_games(q: str | None = None) -> fastapi.responses.JSONResponse:
             "title": game.title,
             "slug": game.slug,
             "image": game.url_image,
-            "tags": tags,
             "rating": game.rating,
             "comments": comments_count,
             "video": game.url_video

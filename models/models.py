@@ -7,31 +7,17 @@ from slugify import slugify
 
 # metadata = db.MetaData()
 
-GamesTags = db.Table('games_tags',
-                     SqlAlchemyBase.metadata,
-                     db.Column('id', db.Integer, primary_key=True, index=True),
-                     db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
-                     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')))
+# GamesTags = db.Table('games_tags',
+#                      SqlAlchemyBase.metadata,
+#                      db.Column('id', db.Integer, primary_key=True, index=True),
+#                      db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
+#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')))
 
 GamesCategories = db.Table('games_categories',
                            SqlAlchemyBase.metadata,
                            db.Column('id', db.Integer, primary_key=True, index=True),
                            db.Column('game_id', db.Integer, db.ForeignKey('games.id')),
                            db.Column('category_id', db.Integer, db.ForeignKey('categories.id')))
-
-
-# class GamesTags(SqlAlchemyBase):
-#     __tablename__ = 'games_tags',
-#     id: int = db.Column(db.Integer, primary_key=True)
-#     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
-#     tag_id: int = db.Column(db.Integer, db.ForeignKey("tags.id"))
-#
-#
-# class GamesCategories(SqlAlchemyBase):
-#     __tablename__ = 'games_categories',
-#     id: int = db.Column(db.Integer, primary_key=True)
-#     game_id: int = db.Column(db.Integer, db.ForeignKey("games.id")),
-#     category_id: int = db.Column(db.Integer, db.ForeignKey("categories.id"))
 
 
 class Games(SqlAlchemyBase):
@@ -52,7 +38,7 @@ class Games(SqlAlchemyBase):
     url_image: str = db.Column(db.String(100))
     is_videogame: bool = db.Column(db.Boolean, index=True)
     categories = relationship("Categories", secondary="games_categories", back_populates='games')
-    tags = relationship("Tags", secondary="games_tags", back_populates='games')
+    # tags = relationship("Tags", secondary="games_tags", back_populates='games')
     publisher_id: int = db.Column(db.Integer, db.ForeignKey("publishers.id"))
     publisher = relationship('Publishers')
     language_id: int = db.Column(db.Integer, db.ForeignKey("languages.id"))
@@ -84,15 +70,15 @@ class Categories(SqlAlchemyBase):
         return self.category_name
 
 
-class Tags(SqlAlchemyBase):
-    __tablename__ = 'tags'
-
-    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    tag_name: str = db.Column(db.String(20), nullable=False, unique=True)
-    games = relationship("Games", secondary="games_tags", back_populates='tags')
-
-    def __repr__(self):
-        return self.tag_name
+# class Tags(SqlAlchemyBase):
+#     __tablename__ = 'tags'
+#
+#     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     tag_name: str = db.Column(db.String(20), nullable=False, unique=True)
+#     games = relationship("Games", secondary="games_tags", back_populates='tags')
+#
+#     def __repr__(self):
+#         return self.tag_name
 
 
 class Publishers(SqlAlchemyBase):

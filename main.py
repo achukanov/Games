@@ -8,7 +8,17 @@ from views.category import router as category_router
 from views.forms import router as form_router
 from fastapi.staticfiles import StaticFiles
 
-app = fastapi.FastAPI()  #(docs_url=None, redoc_url=None)
+app = fastapi.FastAPI()  # (docs_url=None, redoc_url=None)
+
+# TODO: множественное добавление гелереи в админке
+# TODO: парсер старого сайта
+# TODO: автозаполнение нового
+# TODO: автослаг для полей
+# TODO: тестирование
+# TODO: логирование
+# TODO: кеширование
+# TODO: авторизация
+
 
 
 def main():

@@ -40,18 +40,18 @@ class CategoriesAdmin(ModelView, model=Categories):
     column_default_sort = "category_name"
 
 
-class TagsAdmin(ModelView, model=Tags):
-    can_export = False
-    name_plural = 'Тэги'
-    icon = "fa-solid fa-hashtag"
-    page_size_options = [5, 25]
-    column_list = [Tags.id,
-                   Tags.tag_name,
-                   Tags.games]
-    column_searchable_list = [Tags.tag_name]
-    column_sortable_list = [Tags.id,
-                            Tags.tag_name]
-    column_default_sort = "tag_name"
+# class TagsAdmin(ModelView, model=Tags):
+#     can_export = False
+#     name_plural = 'Тэги'
+#     icon = "fa-solid fa-hashtag"
+#     page_size_options = [5, 25]
+#     column_list = [Tags.id,
+#                    Tags.tag_name,
+#                    Tags.games]
+#     column_searchable_list = [Tags.tag_name]
+#     column_sortable_list = [Tags.id,
+#                             Tags.tag_name]
+#     column_default_sort = "tag_name"
 
 
 class GamesAdmin(ModelView, model=Games):
@@ -76,7 +76,8 @@ class GamesAdmin(ModelView, model=Games):
                    Games.is_videogame,
                    Games.categories,
                    Games.publisher,
-                   Games.tags]
+                   # Games.tags,
+                   ]
     column_searchable_list = [Games.title,
                               Games.id]
     column_sortable_list = [Games.is_published,
@@ -194,7 +195,7 @@ def create_admin(app, engine):
     admin.add_view(UsersAdmin)
     admin.add_view(GamesAdmin)
     admin.add_view(CategoriesAdmin)
-    admin.add_view(TagsAdmin)
+    # admin.add_view(TagsAdmin)
     admin.add_view(PublishersAdmin)
     admin.add_view(GalleryAdmin)
     admin.add_view(SimilarGamesAdmin)

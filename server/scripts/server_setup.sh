@@ -21,6 +21,7 @@ ufw allow 443
 ufw enable
 
 
+
 apt install acl -y
 useradd -M apiuser
 usermod -L apiuser
@@ -33,7 +34,7 @@ mkdir /apps/logs
 mkdir /apps/logs/weather_api
 mkdir /apps/logs/weather_api/app_log
 # chmod 777 /apps/logs/weather_api
-setfacl -m u:apiuser:rwx /apps/logs/weather_api
+setfacl -m u:apiuser:rwx /apps/logs/games_api
 # cd /apps
 
 # Create a virtual env for the app.
@@ -55,9 +56,9 @@ pip install -r requirements.txt
 # Copy and enable the daemon
 cp /apps/games/server/units/games.service /etc/systemd/system/
 
-systemctl start weather
-systemctl status weather
-systemctl enable weather
+systemctl start games
+systemctl status games
+systemctl enable games
 
 # Setup the public facing server (NGINX)
 apt install nginx
@@ -65,7 +66,7 @@ apt install nginx
 # CAREFUL HERE. If you are using default, maybe skip this
 rm /etc/nginx/sites-enabled/default
 
-cp /apps/app_repo/ch08-deployment/server/nginx/weather.nginx /etc/nginx/sites-enabled/
+cp /apps/games/server/nginx/games.nginx /etc/nginx/sites-enabled/
 update-rc.d nginx enable
 service nginx restart
 

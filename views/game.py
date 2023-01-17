@@ -22,6 +22,64 @@ async def games_pages() -> fastapi.responses.JSONResponse:
         return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
 
 
+@router.get('/games/new')
+async def new_games() -> fastapi.responses.JSONResponse:
+    games = await get_new_games()
+    data = []
+
+    if games:
+        for game in games:
+            categories = await get_categories_by_game_id(str(game.id))
+            # tags = await get_tags_by_game_id(str(game.id))
+            comments_count = await get_comments_count_by_game_id(str(game.id))
+            game_list = {
+                "id": game.id,
+                "categories": categories,
+                "videoGame": 'true' if game.is_videogame else 'false',
+                "title": game.title,
+                "slug": game.slug,
+                "image": game.url_image,
+                # "tags": categories,
+                "rating": game.rating,
+                "comments": comments_count
+            }
+            data.append(game_list)
+
+        response = {
+            'success': 'true',
+            'data': data
+        }
+
+        return fastapi.responses.JSONResponse(response)
+    else:
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
+
+
+@router.get('/games/top')
+async def top_games() -> fastapi.responses.JSONResponse:
+    games = await get_top_games()
+    data = []
+
+    if games:
+        for game in games:
+            game_list = {
+                "id": game.id,
+                "title": game.title,
+                "slug": game.slug,
+                "image": game.url_image
+            }
+            data.append(game_list)
+
+        response = {
+            'success': 'true',
+            'data': data
+        }
+
+        return fastapi.responses.JSONResponse(response)
+    else:
+        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
+
+
 @router.get('/games/{slug}')
 async def games_slug(slug: str) -> fastapi.responses.JSONResponse:
     game = await get_game_by_slug(slug)
@@ -55,7 +113,7 @@ async def games_slug(slug: str) -> fastapi.responses.JSONResponse:
                 "image": game.url_image,
                 "text": game.text,
                 "gallery": gallery,
-                "tags": categories,
+                # "tags": categories,
                 "rating": game.rating,
                 "namePublisher": publisher.publisher_name,
                 "lang": language.language,
@@ -68,63 +126,5 @@ async def games_slug(slug: str) -> fastapi.responses.JSONResponse:
                 }
         resp = {'success': success, 'data': data}
         return fastapi.responses.JSONResponse(resp)
-    else:
-        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
-
-
-@router.get('/top')
-async def top_games() -> fastapi.responses.JSONResponse:
-    games = await get_top_games()
-    data = []
-
-    if games:
-        for game in games:
-            game_list = {
-                "id": game.id,
-                "title": game.title,
-                "slug": game.slug,
-                "image": game.url_image
-            }
-            data.append(game_list)
-
-        response = {
-            'success': 'true',
-            'data': data
-        }
-
-        return fastapi.responses.JSONResponse(response)
-    else:
-        return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
-
-
-@router.get('/new')
-async def new_games() -> fastapi.responses.JSONResponse:
-    games = await get_new_games()
-    data = []
-
-    if games:
-        for game in games:
-            categories = await get_categories_by_game_id(str(game.id))
-            # tags = await get_tags_by_game_id(str(game.id))
-            comments_count = await get_comments_count_by_game_id(str(game.id))
-            game_list = {
-                "id": game.id,
-                "categories": categories,
-                "videoGame": 'true' if game.is_videogame else 'false',
-                "title": game.title,
-                "slug": game.slug,
-                "image": game.url_image,
-                "tags": categories,
-                "rating": game.rating,
-                "comments": comments_count
-            }
-            data.append(game_list)
-
-        response = {
-            'success': 'true',
-            'data': data
-        }
-
-        return fastapi.responses.JSONResponse(response)
     else:
         return fastapi.responses.JSONResponse(status_code=404, content={'success': 'false'})
