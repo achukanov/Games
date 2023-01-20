@@ -2,9 +2,9 @@
 name: CI
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "production" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "production" ]
 
 jobs:
   build:
@@ -17,7 +17,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            whoami
+            systemctl stop games
+            systemctl status games
             cd /apps/games
-            ls
-            ls -al
+            git pull https://github.com/achukanov/Games
+            systemctl start games
+            systemctl status games
