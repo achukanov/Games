@@ -7,8 +7,6 @@ from sqladmin import Admin, ModelView
 """ categories, publishers, categories_slug, games_slug """
 
 
-
-
 class UsersAdmin(ModelView, model=Users):
     can_create = False
     can_export = False
