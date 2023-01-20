@@ -9,6 +9,8 @@ from viewmodels.categories.publishers import PublishersViewModel
 router = fastapi.APIRouter()
 
 
+
+
 @router.get('/categories')
 async def categories_and_publishers(group: str | None = 'genres') -> fastapi.responses.JSONResponse:
     if group == 'genres':
