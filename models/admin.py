@@ -5,6 +5,8 @@ from sqladmin import Admin, ModelView
 
 """ Заполнить в админке таблицу SEO """
 """ categories, publishers, categories_slug, games_slug """
+
+
 class UsersAdmin(ModelView, model=Users):
     can_create = False
     can_export = False
@@ -84,6 +86,7 @@ class GamesAdmin(ModelView, model=Games):
                             Games.created_date,
                             Games.last_updated]
     column_default_sort = "created_date"
+    details_template = "details.html"
 
 
 class PublishersAdmin(ModelView, model=Publishers):
@@ -174,7 +177,7 @@ class SEOAdmin(ModelView, model=Seo):
                    Seo.page,
                    Seo.title,
                    Seo.description]
-    column_default_sort = "page"
+    column_default_sort = "id"
 
 
 class SubscribersAdmin(ModelView, model=Subscribers):

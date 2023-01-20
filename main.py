@@ -18,6 +18,8 @@ app = fastapi.FastAPI()  # (docs_url=None, redoc_url=None)
 # TODO: логирование
 # TODO: кеширование
 # TODO: авторизация
+# TODO: вывод информации об ошибке в апи
+# TODO: вывод пустого поля
 
 
 

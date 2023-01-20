@@ -35,6 +35,19 @@ async def get_new_games() -> list[Games]:
         return result.scalars()
 
 
+async def get_games_by_category_and_page(category: Optional[Categories], page: str | None) -> list[Games]:
+    async with db_session.create_async_session() as session:
+        if page:
+            ofst = (int(page) - 1) * 30
+        else:
+            page = 1
+            ofst = 0
+        category = category
+        query = select(Games).join(Games.categories).filter(Categories == category).offset(ofst).limit(int(page) * 30)
+        result = await session.execute(query)
+        return result.scalars()
+
+
 async def get_categories_by_game_id(game_id: str) -> list[str]:
     async with db_session.create_async_session() as session:
         query = select(Categories).join(Categories.games).filter(Games.id == game_id)

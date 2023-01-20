@@ -181,6 +181,15 @@ class Feedback(SqlAlchemyBase):
     message: str = db.Column(db.String)
 
 
+'''
+    class Seo
+    1 строка - games_slug
+    2 строка - categories_slug
+    3 строка - publishers
+    4 строка - categories
+'''
+
+
 class Seo(SqlAlchemyBase):
     __tablename__ = 'seo'
 
