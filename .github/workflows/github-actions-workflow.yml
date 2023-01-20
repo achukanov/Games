@@ -16,7 +16,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script: | 
+          script: |
             whoami
-            mkdir ololo
+            cd /apps/games
+            ls
             ls -al
+            status
