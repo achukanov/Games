@@ -21,4 +21,4 @@ jobs:
             cd /apps/games
             ls
             ls -al
-            status
+            systemctl status games
